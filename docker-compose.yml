@@ -1,0 +1,51 @@
+version: "3.5"
+
+networks:
+  nginx-php-postgres:
+
+services:
+  # nginx
+  nginx:
+    image: nginx:stable-alpine
+    container_name: nginx-nbp
+    ports:
+      - "8080:80"
+    volumes:
+      - .:/app
+      - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - php
+      - postgres
+    networks:
+      - nginx-php-postgres
+
+  # php
+  php:
+    build:
+      context: .
+      dockerfile: ./docker/php/Dockerfile
+    container_name: php-nbp
+    volumes:
+      - .:/app
+    networks:
+      - nginx-php-postgres
+
+  # postgresql
+  postgres:
+    image: postgres:latest
+    container_name: postgres-nbp
+    ports:
+      - "6432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    restart: always
+    environment:
+      POSTGRES_USER: pguser
+      POSTGRES_PASSWORD: pgpass
+    networks:
+      - nginx-php-postgres
+
+volumes:
+  db_data:
+
+
