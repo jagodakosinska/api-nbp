@@ -25,6 +25,8 @@ services:
       context: .
       dockerfile: ./docker/php/Dockerfile
     container_name: php-nbp
+    environment:
+      PHP_DATE_TIMEZONE: ${PHP_DATE_TIMEZONE:-Europe/Warsaw}
     volumes:
       - .:/app
     networks:
