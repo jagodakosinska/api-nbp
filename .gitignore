@@ -8,4 +8,5 @@
 /var/
 /vendor/
 /postgres/
+/.idea
 ###< symfony/framework-bundle ###
