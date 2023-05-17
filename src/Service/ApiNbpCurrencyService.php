@@ -31,7 +31,6 @@ class ApiNbpCurrencyService
     public function getCurrencies(): ?array
     {
         $event= new NbpApiCallEvent();
-        $startTime = $event->startTime;
 
         $url = "http://api.nbp.pl/api/exchangerates/tables/A";
         $response = $this->clientHttp->request('GET', $url);
