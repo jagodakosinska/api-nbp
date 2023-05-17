@@ -2,12 +2,14 @@
 
 namespace App\Service;
 
-//use Symfony\Component\HttpClient\Response;
+
+use App\Event\NbpApiCallEvent;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 class ApiNbpCurrencyService
 {
-    public function __construct(private HttpClientInterface $clientHttp)
+    public function __construct(private HttpClientInterface $clientHttp, private EventDispatcherInterface $eventDispatcher)
     {
     }
 
@@ -28,9 +30,15 @@ class ApiNbpCurrencyService
 
     public function getCurrencies(): ?array
     {
+        $event= new NbpApiCallEvent();
+        $startTime = $event->startTime;
+
         $url = "http://api.nbp.pl/api/exchangerates/tables/A";
         $response = $this->clientHttp->request('GET', $url);
         $result = $response->toArray();
+        $this->eventDispatcher->dispatch($event);
+
+
 
         $parsedData = [
             'effectiveDate' => $result[0]['effectiveDate'],
